@@ -11,7 +11,7 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
+	"strconv"
 
 	"example.com/packages/util"
 )
@@ -34,35 +34,40 @@ func main() {
 	}
 
 	var t util.Todos
-
 	t.Load(filename)
 
-	if strings.ToLower(args[1]) == "-list" {
+	switch args[1] {
+	case "-list":
 		fmt.Println(t)
-		os.Exit(0)
-	}
 
-	if strings.ToLower(args[1]) == "-add" {
+	case "-add":
 		if args[2] != "" {
 			t.Add(args[2])
 		} else {
-			os.Exit(2)
+			fmt.Println("Use godo -add \"Task\"")
+			os.Exit(1)
 		}
+
+	case "-delete":
+		x, _ := strconv.Atoi(args[2])
+
+		t.Delete(x)
+
+	case "-complete":
+		val, err := strconv.Atoi(args[2])
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		t.Complete(val)
+
+	default:
+		fmt.Printf("Usage of: " + args[0] +
+			"\n-add\n\tadd a new todo\n" +
+			"-complete <int>\n\tmark todo as completed\n" +
+			"-del <int>\n\tdelete a todo\n" +
+			"-list\n\tlist all todos\n")
 	}
-
-	//t.Add("hello")
-	//t.Add("Another")
-	//fmt.Println("Added an item hello")
-	fmt.Println(t)
-
-	fmt.Printf("\nPending activities: %d\n", t.CountPending())
-
-	//t.Complete(1)
-	//fmt.Println("Completed task 1", t)
-
-	//	delete a task
-	//t.Delete(1)
-	//fmt.Println("Deleted task hello", t)
-
 	t.Store(filename)
 }
