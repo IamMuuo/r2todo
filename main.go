@@ -8,8 +8,16 @@
 
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"example.com/packages/util"
+)
 
 func main() {
-	fmt.Println("Hello Godo")
+	var t util.Todos
+
+	t.Add("hello")
+
+	fmt.Println(t)
 }
