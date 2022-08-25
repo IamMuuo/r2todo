@@ -10,6 +10,8 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strings"
 
 	"example.com/packages/util"
 )
@@ -19,9 +21,34 @@ const (
 )
 
 func main() {
+	args := os.Args
+
+	if len(args) <= 1 {
+		fmt.Printf("Usage of: " + args[0] +
+			"\n-add\n\tadd a new todo\n" +
+			"-complete <int>\n\tmark todo as completed\n" +
+			"-del <int>\n\tdelete a todo\n" +
+			"-list\n\tlist all todos\n")
+
+		os.Exit(1)
+	}
+
 	var t util.Todos
 
 	t.Load(filename)
+
+	if strings.ToLower(args[1]) == "-list" {
+		fmt.Println(t)
+		os.Exit(0)
+	}
+
+	if strings.ToLower(args[1]) == "-add" {
+		if args[2] != "" {
+			t.Add(args[2])
+		} else {
+			os.Exit(2)
+		}
+	}
 
 	//t.Add("hello")
 	//t.Add("Another")
