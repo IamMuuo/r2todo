@@ -9,16 +9,18 @@
 package util
 
 import (
+	"encoding/json"
 	"errors"
+	"io/ioutil"
 	"time"
 )
 
 // A single todo item.
 type Todo struct {
-	Task      string
-	Date      time.Time
-	Done      bool
-	Completed time.Time
+	Task      string    `"task":`
+	Date      time.Time `"Date":`
+	Done      bool      `"Done":`
+	Completed time.Time `"Completed":`
 }
 
 type Todos []Todo // A typedef for an array of todos
@@ -73,4 +75,47 @@ func (t *Todos) CountPending() int {
 	}
 
 	return total
+}
+
+// file io
+
+func (t *Todos) Load(filename string) error {
+	// load items from disk
+	file, err := ioutil.ReadFile(filename)
+
+	if err != nil {
+		return err
+	}
+
+	if len(file) == 0 {
+		return err
+	}
+
+	err = json.Unmarshal(file, t)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+func (t *Todos) Store(filename string) error {
+	// store the todos into disk
+
+	content, err := json.MarshalIndent(t, "", " ")
+
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(filename, content, 0644)
+
+	if err != nil {
+		return nil
+	}
+
+	return nil
+
 }
