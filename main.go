@@ -38,7 +38,7 @@ func main() {
 
 	switch args[1] {
 	case "-list":
-		fmt.Println(t)
+		t.Print()
 
 	case "-add":
 		if args[2] != "" {
