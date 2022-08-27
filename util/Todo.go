@@ -59,11 +59,13 @@ func (t *Todos) Delete(index int) error {
 	// Delete an item
 	ls := *t
 
-	if index <= 0 || index >= len(*t) {
+	if index <= 0 || index > len(*t) {
 		return errors.New("invalid index")
 	}
 
-	*t = append((ls)[:index-1], (ls)[index:]...)
+	*t = append(ls[:index-1], (ls)[index:]...)
+
+	fmt.Printf("Task %d deleted successfully!\n", index)
 
 	return nil
 }
@@ -110,13 +112,14 @@ func (t *Todos) Store(filename string) error {
 	content, err := json.MarshalIndent(t, "", " ")
 
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
 
 	err = ioutil.WriteFile(filename, content, 0644)
 
 	if err != nil {
-		return nil
+		return err
 	}
 
 	return nil

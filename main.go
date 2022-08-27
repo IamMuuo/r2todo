@@ -27,7 +27,7 @@ func main() {
 		fmt.Printf("Usage of: " + args[0] +
 			"\n-add\n\tadd a new todo\n" +
 			"-complete <int>\n\tmark todo as completed\n" +
-			"-del <int>\n\tdelete a todo\n" +
+			"-delete <int>\n\tdelete a todo\n" +
 			"-list\n\tlist all todos\n")
 
 		os.Exit(1)
@@ -66,7 +66,7 @@ func main() {
 		fmt.Printf("Usage of: " + args[0] +
 			"\n-add\n\tadd a new todo\n" +
 			"-complete <int>\n\tmark todo as completed\n" +
-			"-del <int>\n\tdelete a todo\n" +
+			"-delete <int>\n\tdelete a todo\n" +
 			"-list\n\tlist all todos\n")
 	}
 	t.Store(filename)
