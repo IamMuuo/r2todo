@@ -44,12 +44,14 @@ func (t *Todos) Complete(index int) error {
 	// complete a task
 	ls := *t
 
-	if index <= 0 || index >= len(ls) {
+	if index <= 0 || index > len(ls) {
 		return errors.New("invalid index")
 	}
 
 	(ls)[index-1].Completed = time.Now()
 	(ls)[index-1].Done = true
+
+	fmt.Printf("Task #%2d marked as completed!\n", index)
 
 	return nil
 }
