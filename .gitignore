@@ -27,3 +27,6 @@ go.work.sum
 
 # build files
 tmp/
+
+# csv files
+.csv
