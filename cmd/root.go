@@ -18,19 +18,25 @@ package cmd
 import (
 	"os"
 
+	"github.com/iammuuo/r2todo/configs"
+	"github.com/iammuuo/r2todo/internal/controllers"
 	"github.com/spf13/cobra"
 )
+
+var todoController controllers.TodoController
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "r2todo",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "Your humble notificaion server",
+	Long: `r2todo is a command line todo application.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Its simple and quick to operate.. free from all internet
+based distructions.
+
+Your todo applications are also stored in a csv file.
+You own your data
+`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -55,4 +61,10 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	// Initialize the app's configuration
+	cfg := configs.Config{}
+	configs.LoadConfig(&cfg)
+
+	todoController = controllers.TodoController{Cfg: &cfg}
 }
