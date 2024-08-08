@@ -29,4 +29,5 @@ go.work.sum
 tmp/
 
 # csv files
-.csv
+*.csv
+hello.csv

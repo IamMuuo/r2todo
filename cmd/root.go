@@ -61,6 +61,7 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.Flags().StringP("description", "d", "", "A task's description")
 
 	// Initialize the app's configuration
 	cfg := configs.Config{}

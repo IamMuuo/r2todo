@@ -1,11 +1,11 @@
 /*
 Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -13,19 +13,30 @@ import (
 // createCmd represents the create command
 var createCmd = &cobra.Command{
 	Use:   "create",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Creates a todo item",
+	Long: `The 'create' command creates a todo item. 
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+The id and date created are automatically created
+`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("create called")
+
+		taskDescription, err := cmd.Flags().GetString("description")
+		if err != nil {
+			fmt.Fprintf(os.Stderr,
+				"Failed to read the --description flag which is needed while creating task\n",
+			)
+			os.Exit(1)
+		}
+
+		if err := todoController.CreateTodo(taskDescription); err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to create todo with error\n\n%s", err.Error())
+			os.Exit(2)
+		}
 	},
 }
 
 func init() {
+	createCmd.Flags().StringP("description", "d", "", "A task's description")
 	rootCmd.AddCommand(createCmd)
 
 	// Here you will define your flags and configuration settings.
