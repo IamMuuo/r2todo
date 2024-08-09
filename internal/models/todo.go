@@ -87,17 +87,16 @@ func DeserializeTodo(data []string) (*Todo, error) {
 // / Displays a todo item in a neatly formatted manner
 func DisplayTodos(todos *[]Todo) {
 	w := tabwriter.NewWriter(os.Stdout,
-		0, 0,
+		10, 10,
 		1,
 		' ',
 		tabwriter.DiscardEmptyColumns|tabwriter.StripEscape)
 
-	fmt.Fprintln(w, "ID\tDescription\tComplete\tDue Date\tDate Created")
+	fmt.Fprintln(w, "ID\tDescription\tCompleted\tDate Created")
 
 	for _, v := range *todos {
-		fmt.Fprintf(w, "%d\t%s\t%v\t%s\t%s\n",
+		fmt.Fprintf(w, "%d\t%s\t%v\t%s\n",
 			v.ID, v.Description, v.Completed,
-			timediff.TimeDiff(v.DueDate),
 			timediff.TimeDiff(v.DateCreated))
 	}
 

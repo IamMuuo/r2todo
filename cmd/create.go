@@ -28,6 +28,11 @@ The id and date created are automatically created
 			os.Exit(1)
 		}
 
+		if taskDescription == "" {
+			fmt.Fprintf(os.Stderr, "Please specify the todo's description\n")
+			os.Exit(2)
+		}
+
 		if err := todoController.CreateTodo(taskDescription); err != nil {
 			fmt.Fprintf(os.Stderr, "Failed to create todo with error\n\n%s", err.Error())
 			os.Exit(2)

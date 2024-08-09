@@ -4,8 +4,6 @@ Copyright © 2024 Erick Heart <hearteric57@gmail.com>
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
@@ -15,7 +13,7 @@ var listCmd = &cobra.Command{
 	Short: "Lists all currently saved todos",
 	Long:  `Lists all tasks stored by the the program.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("list called")
+		todoController.ListTodos(true, false)
 	},
 }
 
