@@ -2,7 +2,9 @@ package controllers
 
 import (
 	"encoding/csv"
+	"fmt"
 	"os"
+
 	// "time"
 
 	"github.com/iammuuo/r2todo/configs"
@@ -20,6 +22,7 @@ const name string = "hello.csv"
 
 func (t *TodoController) ListTodos(showComplete bool, showOverDue bool) error {
 	file, err := os.OpenFile(name, os.O_RDWR|os.O_CREATE, os.ModeAppend)
+	defer file.Close()
 	if err != nil {
 		return err
 	}
@@ -54,6 +57,7 @@ func (t *TodoController) ListTodos(showComplete bool, showOverDue bool) error {
 func (t *TodoController) CreateTodo(todoDescription string) error {
 
 	file, err := os.OpenFile(name, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	defer file.Close()
 	if err != nil {
 		return err
 	}
@@ -87,5 +91,44 @@ func (t *TodoController) CreateTodo(todoDescription string) error {
 		return err
 	}
 	t.writer.Flush()
+	return nil
+}
+
+func (t *TodoController) ToggleTodoStatus(id int) error {
+	file, err := os.OpenFile(name, os.O_RDWR|os.O_CREATE, 0644)
+	defer file.Close()
+	if err != nil {
+		return err
+	}
+
+	updated := false
+	t.reader = csv.NewReader(file)
+
+	records, err := t.reader.ReadAll()
+	if err != nil {
+		return err
+	}
+
+	for i, value := range records {
+		todo, err := models.DeserializeTodo(value)
+		if err != nil {
+			return err
+		}
+		if todo.ID == id {
+			updated = true
+			todo.Completed = !todo.Completed
+			records[i] = todo.SerializeTodo()
+		}
+	}
+
+	if !updated {
+		return fmt.Errorf("Todo with id %d not found!\n", id)
+	}
+
+	file.Seek(0, 0)
+	t.writer = csv.NewWriter(file)
+	t.writer.WriteAll(records)
+	t.writer.Flush()
+
 	return nil
 }

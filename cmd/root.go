@@ -28,7 +28,7 @@ var todoController controllers.TodoController
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "r2todo",
-	Short: "Your humble notificaion server",
+	Short: "A command-line task manager that does its task and does it well",
 	Long: `r2todo is a command line todo application.
 
 Its simple and quick to operate.. free from all internet
@@ -60,8 +60,8 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.Flags().StringP("description", "d", "", "A task's description")
+	rootCmd.Flags().IntP("task-id", "i", 0, "A task's id in question to be manipulated")
 
 	// Initialize the app's configuration
 	cfg := configs.Config{}
