@@ -3,9 +3,10 @@ package controllers
 import (
 	"encoding/csv"
 	"fmt"
+	"os"
+
 	"github.com/iammuuo/r2todo/configs"
 	"github.com/iammuuo/r2todo/internal/models"
-	"os"
 )
 
 type TodoController struct {
@@ -15,10 +16,10 @@ type TodoController struct {
 	writer *csv.Writer
 }
 
-const name string = "hello.csv"
+// const t.Cfg.FileConfig.FilePath string = "hello.csv"
 
 func (t *TodoController) ListTodos(showComplete bool, showOverDue bool) error {
-	file, err := os.OpenFile(name, os.O_RDWR|os.O_CREATE, os.ModeAppend)
+	file, err := os.OpenFile(t.Cfg.FileConfig.FilePath, os.O_RDWR|os.O_CREATE, 0644)
 	defer file.Close()
 	if err != nil {
 		return err
@@ -37,7 +38,7 @@ func (t *TodoController) ListTodos(showComplete bool, showOverDue bool) error {
 			return err
 		}
 
-		if !showComplete || !todo.Completed {
+		if showComplete && !todo.Completed {
 			continue
 		}
 		//
@@ -53,7 +54,7 @@ func (t *TodoController) ListTodos(showComplete bool, showOverDue bool) error {
 
 func (t *TodoController) CreateTodo(todoDescription string) error {
 
-	file, err := os.OpenFile(name, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
+	file, err := os.OpenFile(t.Cfg.FileConfig.FilePath, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0644)
 	defer file.Close()
 	if err != nil {
 		return err
@@ -92,7 +93,7 @@ func (t *TodoController) CreateTodo(todoDescription string) error {
 }
 
 func (t *TodoController) ToggleTodoStatus(id int) error {
-	file, err := os.OpenFile(name, os.O_RDWR|os.O_CREATE, 0644)
+	file, err := os.OpenFile(t.Cfg.FileConfig.FilePath, os.O_RDWR|os.O_CREATE, 0644)
 	defer file.Close()
 	if err != nil {
 		return err
@@ -132,7 +133,7 @@ func (t *TodoController) ToggleTodoStatus(id int) error {
 
 func (t *TodoController) Delete(id int, deleteAll bool) error {
 	if deleteAll {
-		file, err := os.OpenFile(name, os.O_TRUNC|os.O_CREATE, 0644)
+		file, err := os.OpenFile(t.Cfg.FileConfig.FilePath, os.O_TRUNC|os.O_CREATE, 0644)
 		defer file.Close()
 		if err != nil {
 			return err
@@ -140,7 +141,7 @@ func (t *TodoController) Delete(id int, deleteAll bool) error {
 		return nil
 	}
 
-	file, err := os.OpenFile(name, os.O_RDWR|os.O_CREATE, 0644)
+	file, err := os.OpenFile(t.Cfg.FileConfig.FilePath, os.O_RDWR|os.O_CREATE, 0644)
 	defer file.Close()
 	if err != nil {
 		return err
