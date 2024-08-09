@@ -4,6 +4,9 @@ Copyright © 2024 Erick Heart <hearteric57@gmail.com>
 package cmd
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/spf13/cobra"
 )
 
@@ -13,11 +16,35 @@ var listCmd = &cobra.Command{
 	Short: "Lists all currently saved todos",
 	Long:  `Lists all tasks stored by the the program.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		todoController.ListTodos(true, false)
+		showComplete, showOverdue := false, false
+
+		showAll, err := cmd.Flags().GetBool("show-all")
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Failed parsing show all")
+			os.Exit(2)
+
+		}
+
+		showComplete, err = cmd.Flags().GetBool("show-complete")
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Failed parsing show-complete flag")
+			os.Exit(2)
+
+		}
+
+		if showAll {
+			showComplete = true
+			showOverdue = true
+		}
+
+		todoController.ListTodos(showComplete, showOverdue)
 	},
 }
 
 func init() {
+
+	listCmd.Flags().BoolP("show-all", "e", false, "Specifies whether to show all todos")
+	listCmd.Flags().BoolP("show-complete", "c", true, "Specifies whether to show all todos")
 	rootCmd.AddCommand(listCmd)
 
 	// Here you will define your flags and configuration settings.

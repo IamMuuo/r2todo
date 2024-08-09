@@ -1,11 +1,11 @@
 /*
 Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -13,19 +13,36 @@ import (
 // deleteCmd represents the delete command
 var deleteCmd = &cobra.Command{
 	Use:   "delete",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Deletes a todo item from cache",
+	Long: `Delete
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+The delete subcommand either deletes a specified todo
+or deletes all if passed the --all hence restating
+.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("delete called")
+		id, err := cmd.Flags().GetInt("task-id")
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Please specify the todo ID to update completion status")
+			os.Exit(2)
+		}
+
+		deleteAll, err := cmd.Flags().GetBool("delete-all")
+		if id == 0 && deleteAll == false {
+			fmt.Fprintf(os.Stderr, "Please specify the todo ID to delete or use the --delete-all flag\n")
+			os.Exit(2)
+		}
+
+		if err = todoController.Delete(id, deleteAll); err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to update task completion status\nError: %s\n", err.Error())
+			os.Exit(2)
+		}
 	},
 }
 
 func init() {
+
+	deleteCmd.Flags().BoolP("delete-all", "a", false, "Specifies whether to delete all todos")
+	deleteCmd.Flags().IntP("task-id", "i", 0, "A task's id in question to be manipulated")
 	rootCmd.AddCommand(deleteCmd)
 
 	// Here you will define your flags and configuration settings.

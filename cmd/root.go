@@ -61,7 +61,8 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().StringP("description", "d", "", "A task's description")
-	rootCmd.Flags().IntP("task-id", "i", 0, "A task's id in question to be manipulated")
+	rootCmd.Flags().IntP("task-id", "i", 0, "A task's description")
+	rootCmd.Flags().BoolP("delete-all", "a", false, "Specifies whether to delete all todos")
 
 	// Initialize the app's configuration
 	cfg := configs.Config{}

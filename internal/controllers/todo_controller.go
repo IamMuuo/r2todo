@@ -3,12 +3,9 @@ package controllers
 import (
 	"encoding/csv"
 	"fmt"
-	"os"
-
-	// "time"
-
 	"github.com/iammuuo/r2todo/configs"
 	"github.com/iammuuo/r2todo/internal/models"
+	"os"
 )
 
 type TodoController struct {
@@ -40,7 +37,7 @@ func (t *TodoController) ListTodos(showComplete bool, showOverDue bool) error {
 			return err
 		}
 
-		if !showComplete && !todo.Completed {
+		if !showComplete || !todo.Completed {
 			continue
 		}
 		//
@@ -125,6 +122,57 @@ func (t *TodoController) ToggleTodoStatus(id int) error {
 		return fmt.Errorf("Todo with id %d not found!\n", id)
 	}
 
+	file.Seek(0, 0)
+	t.writer = csv.NewWriter(file)
+	t.writer.WriteAll(records)
+	t.writer.Flush()
+
+	return nil
+}
+
+func (t *TodoController) Delete(id int, deleteAll bool) error {
+	if deleteAll {
+		file, err := os.OpenFile(name, os.O_TRUNC|os.O_CREATE, 0644)
+		defer file.Close()
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
+	file, err := os.OpenFile(name, os.O_RDWR|os.O_CREATE, 0644)
+	defer file.Close()
+	if err != nil {
+		return err
+	}
+
+	t.reader = csv.NewReader(file)
+
+	records, err := t.reader.ReadAll()
+	if err != nil {
+		return err
+	}
+
+	founIndex := 0
+	found := false
+	for i, value := range records {
+		todo, err := models.DeserializeTodo(value)
+		if err != nil {
+			return err
+		}
+		if todo.ID == id {
+			found = true
+			founIndex = i
+		}
+	}
+
+	if !found {
+		return fmt.Errorf("Todo with id %d not found!\n", id)
+	}
+
+	records = append(records[:founIndex], records[founIndex+1:]...)
+
+	file.Truncate(0)
 	file.Seek(0, 0)
 	t.writer = csv.NewWriter(file)
 	t.writer.WriteAll(records)
