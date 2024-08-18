@@ -37,14 +37,9 @@ func (t *TodoController) ListTodos(showComplete bool, showOverDue bool) error {
 		if err != nil {
 			return err
 		}
-
 		if showComplete && !todo.Completed {
 			continue
 		}
-		//
-		// if !showOverDue && !todo.DueDate.After(time.Now()) {
-		// 	continue
-		// }
 		t.Todos = append(t.Todos, *todo)
 	}
 	models.DisplayTodos(&t.Todos)
@@ -89,6 +84,9 @@ func (t *TodoController) CreateTodo(todoDescription string) error {
 		return err
 	}
 	t.writer.Flush()
+	if t.writer.Error() != nil {
+		return err
+	}
 	return nil
 }
 
