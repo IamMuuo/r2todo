@@ -1,6 +1,11 @@
 
 # r2todo 📝
 
+----
+
+![demo](r2todo.gif)
+
+
 `r2todo` is a simple and efficient command-line TODO application that keeps you focused by managing your tasks in a CSV file. It's designed to be quick to operate and free from internet-based distractions, ensuring that you own your data. 🚀
 
 ## Features ✨
